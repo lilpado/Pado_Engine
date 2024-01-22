@@ -25,6 +25,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
+    // 깃허브 테스트
+
     // TODO: Place code here.
 
     // Initialize global strings
