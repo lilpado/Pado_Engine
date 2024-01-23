@@ -3,6 +3,7 @@
 
 #include "framework.h"
 #include "Editor_Window.h"
+#include "CommonInclude.h"
 
 #define MAX_LOADSTRING 100
 
@@ -17,13 +18,15 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance, // 프로그램 인스턴스 핸들
+                     _In_opt_ HINSTANCE hPrevInstance, // 바로 앞에 실행된 현재 프로그램의 인스턴스 핸들, 없을 경우 NULL
+                                                       // 지금은 신경쓰지 않아도 되는 값이다.
+                     _In_ LPWSTR    lpCmdLine,  // 명령행 으로 입력된 프로그램 인수 (Args) - 거의 쓸 일 x
+                     _In_ int       nCmdShow) // 프로그램이 실행될 형태이며, 보통 모양정보 등이 전달된다.
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
+
 
     // 깃허브 테스트
 
@@ -32,10 +35,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_EDITORWINDOW, szWindowClass, MAX_LOADSTRING);
-    MyRegisterClass(hInstance);
+    MyRegisterClass(hInstance); // 윈도우 정보 할당
 
     // Perform application initialization:
-    if (!InitInstance (hInstance, nCmdShow))
+    if (!InitInstance (hInstance, nCmdShow)) // 윈도우 생성, show
     {
         return FALSE;
     }
@@ -45,6 +48,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MSG msg;
 
     // Main message loop:
+    // 프로그램 종료되지 않도록 계속 루프
     while (GetMessage(&msg, nullptr, 0, 0))
     {
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
@@ -81,8 +85,9 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EDITORWINDOW);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-    return RegisterClassExW(&wcex);
+    
+    // 메모리에 '윈도우 정보' 할당 (이름: szWindowClass)
+    return RegisterClassExW(&wcex); 
 }
 
 //
@@ -99,15 +104,23 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
 
+   // szWindowClass : 아까 메모리에 넣은 윈도우 정보
+   // CreateWindowW : 실제 윈도우 인스턴스 - 메모리 할당
+   // hWnd : 윈도우 인스턴스에 대한 핸들 값 반환
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, 0, 1600, 900, nullptr, nullptr, hInstance, nullptr);
+
+   //2개 이상의 윈도우도 생성 가능하다.
+   //HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   //    CW_USEDEFAULT, 0, 1600, 900, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
       return FALSE;
    }
 
-   ShowWindow(hWnd, nCmdShow);
+
+   ShowWindow(hWnd, nCmdShow); // 윈도우 화면 출력
    UpdateWindow(hWnd);
 
    return TRUE;
@@ -116,7 +129,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
-//  PURPOSE: Processes messages for the main window.
+//  PURPOSE: Processes messages for the main window. - 메시지 처리
 //
 //  WM_COMMAND  - process the application menu
 //  WM_PAINT    - Paint the main window
@@ -146,15 +159,51 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_PAINT:
         {
+            //DC : 화면 출력에 필요한 모든 정보를 가지는 데이터 구조체.
+            // - GDI모듈에 의해 관리 된다.
+            // - 폰트 / 선의 굵기 / 색상 : '그림' 정보
+            // - WinAPI에서 화면 출력에 필요한 모든 경우는 DC를 통해서 진행.
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
+
+            // 파랑 브러쉬 생성
+            HBRUSH brush = CreateSolidBrush(RGB(0, 0, 255));
+            // 파랑 브러쉬 DC에 선택 & 흰색(default) 브러쉬 반환
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, brush);
+
+            Rectangle(hdc, 100, 100, 200, 200);
+
+            // 다시 흰색 원본브러쉬 선택
+            SelectObject(hdc, oldBrush);
+            // 파랑 브러쉬 삭제
+            DeleteObject(brush);
+
+            HPEN redPen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
+            HPEN oldPen = (HPEN)SelectObject(hdc, redPen);
+
+            Ellipse(hdc, 200, 200, 300, 300);
+
+            SelectObject(hdc, oldPen);
+            DeleteObject(redPen);
+
+            // 기본으로 자주 사용되는 GDI 오브젝트를 미리 DC안에 만들어두었는데,
+            // 그 오브젝트들을 '스톡 오브젝트' 라고 한다.
+            HBRUSH grayBrush = (HBRUSH)GetStockObject(GRAY_BRUSH);
+            oldBrush = (HBRUSH)SelectObject(hdc, grayBrush);
+            Rectangle(hdc, 400, 400, 500, 500);
+            SelectObject(hdc, oldBrush); // 쓰고나면 항상 default로!
+
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+
+    //case WM_LBUTTONDOWN:
+    //    DestroyWindow(hWnd);
+    //    break;
+
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
