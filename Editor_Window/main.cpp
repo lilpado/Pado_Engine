@@ -3,7 +3,12 @@
 
 #include "framework.h"
 #include "Editor_Window.h"
-#include "CommonInclude.h"
+
+#include "..\PadoEngine_SOURCE\pApplication.h"
+
+//#pragma comment (lib, "..\x64\Debug\PadoEngine_Window.lib")
+
+Application app;
 
 #define MAX_LOADSTRING 100
 
@@ -29,7 +34,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, // 프로그램 인스턴스 핸들
 
 
     // 깃허브 테스트
-
+    app.test();
     // TODO: Place code here.
 
     // Initialize global strings
@@ -47,16 +52,42 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, // 프로그램 인스턴스 핸들
 
     MSG msg;
 
-    // Main message loop:
-    // 프로그램 종료되지 않도록 계속 루프
-    while (GetMessage(&msg, nullptr, 0, 0))
+    //GetMessage(&msg, nullptr, 0, 0)
+    // 프로세스에서 발생한 메시지를 메시지 큐에서 가져오는 함수
+    // 메시지 큐에 아무것도 없다면?? 아무 메시지도 가져오지 않는다.
+
+    // PeekMessage : 메시지 큐 속 메시지 유무에 상관없이 함수가 리턴된다.
+    // - 리턴 값이 true인 경우 : "메시지가 있다."
+    // - 리턴 값이 false인 경우 : "메시지가 없다" 라고 가르쳐준다.
+
+    while (true)
     {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            if (msg.message == WM_QUIT)
+                break;
+
+            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+        }
+        else
+        {
+            // 메시지가 없을 경우 여기서 처리
+            // 게임 로직이 들어가면 된다.
         }
     }
+
+    //while (GetMessage(&msg, nullptr, 0, 0))
+    //{
+    //    if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+    //    {
+    //        TranslateMessage(&msg);
+    //        DispatchMessage(&msg);
+    //    }
+    //}
 
     return (int) msg.wParam;
 }
@@ -157,44 +188,45 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+    //case WM_KEYDOWN:
+    //{
+
+    //}
+    //break;
     case WM_PAINT:
         {
-            //DC : 화면 출력에 필요한 모든 정보를 가지는 데이터 구조체.
-            // - GDI모듈에 의해 관리 된다.
-            // - 폰트 / 선의 굵기 / 색상 : '그림' 정보
-            // - WinAPI에서 화면 출력에 필요한 모든 경우는 DC를 통해서 진행.
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
+        //DC : 화면 출력에 필요한 모든 정보를 가지는 데이터 구조체.
+        // - GDI모듈에 의해 관리 된다.
+        // - 폰트 / 선의 굵기 / 색상 : '그림' 정보
+        // - WinAPI에서 화면 출력에 필요한 모든 경우는 DC를 통해서 진행.
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
 
-            // 파랑 브러쉬 생성
-            HBRUSH brush = CreateSolidBrush(RGB(0, 0, 255));
-            // 파랑 브러쉬 DC에 선택 & 흰색(default) 브러쉬 반환
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, brush);
+        // 파랑 브러쉬 생성
+        HBRUSH brush = CreateSolidBrush(RGB(0, 0, 255));
+        // 파랑 브러쉬 DC에 선택 & 흰색(default) 브러쉬 반환
+        HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, brush);
+        Rectangle(hdc, 100, 100, 200, 200);
+        // 다시 흰색 원본브러쉬 선택
+        SelectObject(hdc, oldBrush);
+        // 파랑 브러쉬 삭제
+        DeleteObject(brush);
 
-            Rectangle(hdc, 100, 100, 200, 200);
+        HPEN redPen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
+        HPEN oldPen = (HPEN)SelectObject(hdc, redPen);
+        Ellipse(hdc, 200, 200, 300, 300);
+        SelectObject(hdc, oldPen);
+        DeleteObject(redPen);
 
-            // 다시 흰색 원본브러쉬 선택
-            SelectObject(hdc, oldBrush);
-            // 파랑 브러쉬 삭제
-            DeleteObject(brush);
+        // 기본으로 자주 사용되는 GDI 오브젝트를 미리 DC안에 만들어두었는데,
+        // 그 오브젝트들을 '스톡 오브젝트' 라고 한다.
+        HBRUSH grayBrush = (HBRUSH)GetStockObject(GRAY_BRUSH);
+        oldBrush = (HBRUSH)SelectObject(hdc, grayBrush);
+        Rectangle(hdc, 400, 400, 500, 500);
+        SelectObject(hdc, oldBrush); // 쓰고나면 항상 default로!
 
-            HPEN redPen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
-            HPEN oldPen = (HPEN)SelectObject(hdc, redPen);
-
-            Ellipse(hdc, 200, 200, 300, 300);
-
-            SelectObject(hdc, oldPen);
-            DeleteObject(redPen);
-
-            // 기본으로 자주 사용되는 GDI 오브젝트를 미리 DC안에 만들어두었는데,
-            // 그 오브젝트들을 '스톡 오브젝트' 라고 한다.
-            HBRUSH grayBrush = (HBRUSH)GetStockObject(GRAY_BRUSH);
-            oldBrush = (HBRUSH)SelectObject(hdc, grayBrush);
-            Rectangle(hdc, 400, 400, 500, 500);
-            SelectObject(hdc, oldBrush); // 쓰고나면 항상 default로!
-
-            EndPaint(hWnd, &ps);
-        }
+        EndPaint(hWnd, &ps);
+    }
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
