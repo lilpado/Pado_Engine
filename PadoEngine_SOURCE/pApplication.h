@@ -1,6 +1,6 @@
 #pragma once
 #include "pGameObject.h"
-#include "pGameObjectRED.h"
+#include "pRanObject.h"
 
 namespace p
 {
@@ -24,7 +24,8 @@ namespace p
 		
 		// 플레이어 (조작)
 		GameObject mPlayer;
-		GameObjectRED mPlayer2;
+		GameObject mPlayerRED;
+		RanObject mObstacle;
 	};
 }
 

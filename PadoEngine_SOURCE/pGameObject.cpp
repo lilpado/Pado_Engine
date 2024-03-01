@@ -1,4 +1,5 @@
 #include "pGameObject.h"
+#include "pInput.h"
 
 namespace p
 {
@@ -14,19 +15,19 @@ namespace p
 
 	void GameObject::Update() 
 	{
-		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+		if (Input::GetKey(eKeyCode::A))
 		{
 			mX -= 0.01f;
 		}
-		if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+		if (Input::GetKey(eKeyCode::D))
 		{
 			mX += 0.01f;
 		}
-		if (GetAsyncKeyState(VK_UP) & 0x8000)
+		if (Input::GetKey(eKeyCode::W))
 		{
 			mY -= 0.01f;
 		}
-		if (GetAsyncKeyState(VK_DOWN) & 0x8000)
+		if (Input::GetKey(eKeyCode::S))
 		{
 			mY += 0.01f;
 		}
@@ -56,5 +57,45 @@ namespace p
 		DeleteObject(redPen);
 
 	}
+
+	void GameObject::UpdateRED()
+	{
+		if (GetAsyncKeyState('A') & 0x8000)
+		{
+			mX -= 0.01f;
+		}
+		if (GetAsyncKeyState('D') & 0x8000)
+		{
+			mX += 0.01f;
+		}
+		if (GetAsyncKeyState('W') & 0x8000)
+		{
+			mY -= 0.01f;
+		}
+		if (GetAsyncKeyState('S') & 0x8000)
+		{
+			mY += 0.01f;
+		}
+	}
+	void GameObject::LateUpdateRED() 
+	{
+
+	}
+	void GameObject::RenderRED(HDC hdc)
+	{
+		HBRUSH brush = CreateSolidBrush(RGB(255, 0, 0));
+		HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, brush);
+
+		HPEN redPen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
+		HPEN oldPen = (HPEN)SelectObject(hdc, redPen);
+		SelectObject(hdc, oldPen);
+
+		Ellipse(hdc, 1200 + mX, 700 + mY, 1300 + mX, 800 + mY);
+
+		SelectObject(hdc, oldBrush);
+		DeleteObject(brush);
+		DeleteObject(redPen);
+	}
+
 
 }

@@ -14,6 +14,10 @@ namespace p
 		void LateUpdate();
 		void Render(HDC hdc);
 
+		void UpdateRED();
+		void LateUpdateRED();
+		void RenderRED(HDC hdc);
+
 		void SetPosition(float x, float y)
 		{
 			mX = x;

@@ -1,4 +1,5 @@
 #include "pApplication.h"
+#include "pInput.h"
 
 namespace p
 {
@@ -18,7 +19,10 @@ namespace p
 		mHdc = GetDC(hwnd);
 
 		mPlayer.SetPosition(0.0f, 0.0f);
-		mPlayer2.SetPosition(0.0f, 0.0f);
+		mPlayerRED.SetPosition(0.0f, 0.0f);
+		mObstacle.SetPosition(0.0f, 0.0f);
+
+		Input::Initialize();
 	}
 	void Application::Run()
 	{
@@ -28,8 +32,11 @@ namespace p
 	}
 	void Application::Update()
 	{
+		Input::Update();
+
 		mPlayer.Update();
-		mPlayer2.Update();
+		mPlayerRED.UpdateRED();
+		mObstacle.Update(mHwnd);
 	}
 	void Application::LateUpdate()
 	{
@@ -37,7 +44,9 @@ namespace p
 	}
 	void Application::Render()
 	{
+
 		mPlayer.Render(mHdc);
-		mPlayer2.Render(mHdc);
+		mPlayerRED.RenderRED(mHdc);
+		mObstacle.Render(mHdc);
 	}
 }
