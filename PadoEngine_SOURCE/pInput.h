@@ -15,7 +15,8 @@ namespace p
 	{
 		Q, W, E, R, T, Y, U, I, O, P,
 		A, S, D, F, G, H, J, K, L,
-		Z, X, C, V, B, N, M,
+		Z, X, C, V, B, N, M, 
+		Left, Right, Down, Up,
 		End, 
 	};
 
@@ -27,7 +28,7 @@ namespace p
 			eKeyCode keyCode;
 			eKeyState state;
 			bool bPressed;
-		};
+		};		
 
 		static void Initialize();
 		static void Update();
@@ -37,7 +38,16 @@ namespace p
 		static bool GetKey(eKeyCode code) { return mKeys[(UINT)code].state == eKeyState::Pressed; }
 
 	private:
+		static void createKeys();
+		static void updateKeys();
+		static void updateKey(Key& key);
+		static bool isKeyDown(eKeyCode code);
+		static void updateKeyDown(Key& key);
+		static void updateKeyUp(Key& key);
+
+	private:
 		//eKeyState mState = eKeyState::Up;
 		static std::vector<Key> mKeys;
+
 	};
 }
