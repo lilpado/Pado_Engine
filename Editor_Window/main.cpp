@@ -124,13 +124,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
 
-   // szWindowClass : 아까 메모리에 넣은 윈도우 정보
-   // CreateWindowW : 실제 윈도우 인스턴스 - 메모리 할당
-   // hWnd : 윈도우 인스턴스에 대한 핸들 값 반환
+   const UINT width = 1600;
+   const UINT height = 900;
+   
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, 1600, 900, nullptr, nullptr, hInstance, nullptr);
 
-   application.Initialize(hWnd);
+   application.Initialize(hWnd, width, height);
 
    //2개 이상의 윈도우도 생성 가능하다.
    //HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
@@ -142,8 +142,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    }
 
 
-   ShowWindow(hWnd, nCmdShow); // 윈도우 화면 출력
-   UpdateWindow(hWnd);
+   //ShowWindow(hWnd, nCmdShow); // 윈도우 화면 출력
+   //UpdateWindow(hWnd);
 
    return TRUE;
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "pGameObject.h"
 #include "pRanObject.h"
+#include "pTime.h"
 
 namespace p
 {
@@ -10,7 +11,7 @@ namespace p
 		Application();
 		~Application();
 
-		void Initialize(HWND hwnd);
+		void Initialize(HWND hwnd, UINT width, UINT height);
 		void Run();
 		
 		void Update();
@@ -21,6 +22,12 @@ namespace p
 	private:
 		HWND mHwnd;
 		HDC mHdc;
+
+		HDC mBackHdc;
+		HBITMAP mBackBitmap;
+
+		UINT mWidth;
+		UINT mHeight;
 		
 		// 플레이어 (조작)
 		GameObject mPlayer;
