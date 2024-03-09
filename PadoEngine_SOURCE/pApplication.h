@@ -1,4 +1,5 @@
 #pragma once
+#include "CommonInclude.h"
 #include "pGameObject.h"
 #include "pRanObject.h"
 #include "pTime.h"
@@ -18,6 +19,12 @@ namespace p
 		void LateUpdate();
 		void Render();
 
+	private:
+		void clearRenderTarget();
+		void copyRenderTarget(HDC src, HDC dest);
+		void adjustWindowRect(HWND hwnd, UINT width, UINT height);
+		void createBuffer(UINT width, UINT height);
+		void initializeEtc();
 
 	private:
 		HWND mHwnd;
@@ -30,9 +37,9 @@ namespace p
 		UINT mHeight;
 		
 		// 플레이어 (조작)
-		GameObject mPlayer;
-		GameObject mPlayerRED;
 		RanObject mObstacle;
+
+		std::vector<GameObject*> mGameObjects;
 	};
 }
 

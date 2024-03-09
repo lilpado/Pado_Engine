@@ -15,6 +15,7 @@ namespace p
 		};
 
 		GameObject();
+		GameObject(int RGB);
 		~GameObject();
 
 		void Update();
@@ -24,6 +25,10 @@ namespace p
 		void UpdateRED();
 		void LateUpdateRED();
 		void RenderRED(HDC hdc);
+
+		void UpdateBLUE();
+		void LateUpdateBLUE();
+		void RenderBLUE(HDC hdc);
 
 		void GenerateBullet();
 		void UpdateBullet();
@@ -42,6 +47,7 @@ namespace p
 		// 게임 오브젝트의 좌표
 		float mX;
 		float mY;
+		int mRGB;
 		std::vector<Bullet> mBullets;
 	};
 }
