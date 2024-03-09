@@ -7,6 +7,13 @@ namespace p
 	class GameObject
 	{
 	public:
+		struct Bullet
+		{
+			float x;
+			float y;
+			float speed;
+		};
+
 		GameObject();
 		~GameObject();
 
@@ -17,6 +24,10 @@ namespace p
 		void UpdateRED();
 		void LateUpdateRED();
 		void RenderRED(HDC hdc);
+
+		void GenerateBullet();
+		void UpdateBullet();
+		void RenderBullet(HDC hdc);
 
 		void SetPosition(float x, float y)
 		{
@@ -31,5 +42,6 @@ namespace p
 		// 게임 오브젝트의 좌표
 		float mX;
 		float mY;
+		std::vector<Bullet> mBullets;
 	};
 }

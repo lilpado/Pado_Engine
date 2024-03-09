@@ -14,7 +14,7 @@ namespace p
 
 	}
 
-	void GameObject::Update() 
+	void GameObject::Update()
 	{
 		const int speed = 100.0f;
 		if (Input::GetKey(eKeyCode::A))
@@ -62,7 +62,7 @@ namespace p
 
 	void GameObject::UpdateRED()
 	{
-		const int speed = 100.0f;
+		const int speed = 150.0f;
 		if (Input::GetKey(eKeyCode::Left))
 		{
 			mX -= speed * Time::DeltaTime();
@@ -79,8 +79,14 @@ namespace p
 		{
 			mY += speed * Time::DeltaTime();
 		}
+		if (Input::GetKeyDown(eKeyCode::Space))
+		{
+			GenerateBullet();
+		}
+
+		UpdateBullet();
 	}
-	void GameObject::LateUpdateRED() 
+	void GameObject::LateUpdateRED()
 	{
 
 	}
@@ -98,7 +104,36 @@ namespace p
 		SelectObject(hdc, oldBrush);
 		DeleteObject(brush);
 		DeleteObject(redPen);
+
+		RenderBullet(hdc);
 	}
 
+	void GameObject::GenerateBullet()
+	{
+		Bullet bullet(1250 + mX, 700 + mY, 200.0f);
+		mBullets.push_back(bullet);
+	}
 
+	void GameObject::UpdateBullet()
+	{
+		for (int i = 0; i < mBullets.size(); i++)
+		{
+			mBullets[i].y -= mBullets[i].speed * Time::DeltaTime();
+		}
+	}
+
+	void GameObject::RenderBullet(HDC hdc)
+	{
+		for (int i = 0; i < mBullets.size(); i++)
+		{
+			HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));
+			HBRUSH oldbrush = (HBRUSH)SelectObject(hdc, brush);
+
+			Ellipse(hdc, mBullets[i].x - 10, mBullets[i].y - 10
+				, mBullets[i].x + 10, mBullets[i].y + 10);
+
+			SelectObject(hdc, oldbrush);
+			DeleteObject(brush);
+		}
+	}	
 }
