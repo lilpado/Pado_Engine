@@ -36,10 +36,7 @@ namespace p
 		UINT mWidth;
 		UINT mHeight;
 		
-		// 플레이어 (조작)
-		RanObject mObstacle;
-
-		std::vector<GameObject*> mGameObjects;
+		//std::vector<Scene*> mScenes;
 	};
 }
 

@@ -6,8 +6,8 @@ namespace p
 {
 	GameObject::GameObject()
 	{
-		mX = 0.0f;
-		mY = 0.0f;
+		mX = 100.0f;
+		mY = 600.0f;
 		mRGB = 0;
 	}
 
@@ -86,7 +86,7 @@ namespace p
 		HPEN oldPen = (HPEN)SelectObject(hdc, redPen);
 		SelectObject(hdc, oldPen);
 
-		Ellipse(hdc, mX, 700 + mY, 100 + mX, 800 + mY);
+		Ellipse(hdc, mX - 50, mY - 50, mX + 50, mY + 50);
 
 		SelectObject(hdc, oldBrush);
 		DeleteObject(brush);
@@ -144,7 +144,7 @@ namespace p
 
 	void GameObject::GenerateBullet()
 	{
-		Bullet bullet(50 + mX, 700 + mY, 200.0f);
+		Bullet bullet(mX, mY - 50, 200.0f);
 		mBullets.push_back(bullet);
 	}
 

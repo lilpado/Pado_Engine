@@ -5,6 +5,7 @@
 #include "Editor_Window.h"
 
 #include "..\PadoEngine_SOURCE\pApplication.h"
+#include "..\PadoEngine_Window\pLoadScenes.h"
 
 //#pragma comment (lib, "..\x64\Debug\PadoEngine_Window.lib")
 
@@ -142,8 +143,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    }
 
 
-   //ShowWindow(hWnd, nCmdShow); // 윈도우 화면 출력
-   //UpdateWindow(hWnd);
+   ShowWindow(hWnd, nCmdShow); // 윈도우 화면 출력
+   UpdateWindow(hWnd);
+
+   //load Scenes
+   p::LoadScenes();
 
    return TRUE;
 }

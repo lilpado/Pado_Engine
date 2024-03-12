@@ -1,5 +1,7 @@
 #include "pApplication.h"
 #include "pInput.h"
+#include "pTime.h"
+#include "pSceneManager.h"
 
 namespace p
 {
@@ -10,7 +12,6 @@ namespace p
 		, mHeight(0)
 		, mBackHdc(NULL)
 		, mBackBitmap(NULL)
-		, mGameObjects{}
 	{
 
 	}
@@ -23,18 +24,9 @@ namespace p
 	{
 		adjustWindowRect(hwnd, width, height);
 		createBuffer(width, height);
-
-		for (size_t i = 0; i < 100; i++)
-		{
-			GameObject* gameObj = new GameObject();
-		
-			gameObj->SetPosition(rand() % 1600, rand() % 900);
-			mGameObjects.push_back(gameObj);
-		}
-
-		mObstacle.SetPosition(0.0f, 0.0f);
-
 		initializeEtc();
+
+		SceneManager::Initialize();
 	}
 	void Application::Run()
 	{
@@ -47,14 +39,7 @@ namespace p
 		Input::Update();
 		Time::Update();
 
-		for (size_t i = 0; i < mGameObjects.size(); i++)
-		{
-			mGameObjects[i]->Update();
-		}
-
-		//mPlayer.Update();
-		//mPlayerRED.UpdateRED();
-		mObstacle.Update(mHwnd);
+		SceneManager::Update();
 	}
 	void Application::LateUpdate()
 	{
@@ -65,15 +50,7 @@ namespace p
 		clearRenderTarget();
 
 		Time::Render(mBackHdc);
-		
-		for (size_t i = 0; i < mGameObjects.size(); i++)
-		{
-			mGameObjects[i]->Render(mBackHdc);
-		}
-
-		//mPlayer.Render(mBackHdc);
-		//mPlayerRED.RenderRED(mBackHdc);
-		mObstacle.Render(mBackHdc);
+		SceneManager::Render(mBackHdc);
 
 		copyRenderTarget(mBackHdc, mHdc);
 	}
